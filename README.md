@@ -1,5 +1,5 @@
 # DisjointIntervalST
-interval search tree that can merge and delete disjoint intervals
+## interval search tree that can merge and delete disjoint intervals
 
 The simpler solution to the disjoint interval problem would involve one pass through 
 the interval data while checking for intersections and outputting to the txt file accordingly.
