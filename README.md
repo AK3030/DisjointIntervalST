@@ -9,3 +9,6 @@ you consider the situation where the state of the data is tracked but not printe
 solutions are possible. I used a modified interval search tree to handle insertion, merging, 
 and deletion in log(n). It should also be noted that this is only the optimal solution if 
 the majority of merges and deletions do not intersect with a large percentage of the intervals.
+
+To run the program from the terminal from the project directory:
+ruby FileIO.rb /path/existing_csv.csv outputfile.txt
