@@ -186,11 +186,18 @@ class IntervalSearchTree
 
   def merge(new_node)
     int_minmax = find_intersection_minmax(new_node)
+
+    if int_minmax[0] == nil && int_minmax[1] == nil
+
+      insert(new_node)
+      return
+    end
+
     upper = [int_minmax[1], new_node.e].max
     lower = [int_minmax[0], new_node.s].min
 
-    p int_minmax
-    p [new_node.s, new_node.e]
+    # p int_minmax
+    # p [new_node.s, new_node.e]
     merge_node = ISTNode.new(lower, upper)
     insert(merge_node)
 
@@ -226,37 +233,3 @@ class IntervalSearchTree
   end
 
 end
-
-a = IntervalSearchTree.new
-some_node = ISTNode.new(4,6)
-root = ISTNode.new(1,3)
-other_node = ISTNode.new(20,25)
-the_node = ISTNode.new(15,17)
-another_node = ISTNode.new(7,12)
-two_node = ISTNode.new(30,40)
-arr = [root,
-two_node,
-some_node,
-the_node,
-other_node,
-another_node
-]
-
-
-arr.each do |node|
-  a.insert(node)
-end
-
-p a.in_order_traversal
-
-stuff = ISTNode.new(0,10)
-# a.merge(stuff)
-a.delete_range(stuff)
-p a.in_order_traversal
-
-# a.find_intersection_minmax(stuff)
-# p a.in_order_traversal
-# a.remove(root)
-# p a.in_order_traversal
-# a.root = stuff
-# a.in_order_traversal
