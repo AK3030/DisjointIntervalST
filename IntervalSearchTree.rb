@@ -22,10 +22,10 @@ class IntervalSearchTree
     new_node.parent = curr_node
 
     if new_node.s <= curr_node.s
-      new_node.is_right = false
+      # new_node.is_right = false
       curr_node.left = insert_into_tree(curr_node.left, new_node)
     elsif new_node.s > curr_node.s
-      new_node.is_right = true
+      # new_node.is_right = true
       curr_node.right = insert_into_tree(curr_node.right, new_node)
     end
 
@@ -111,7 +111,6 @@ class IntervalSearchTree
       node.e = swap_node.e
 
     elsif node.left
-      p "hi - - -"
       node.left.parent = node.parent
       if node.is_right
         node.parent.right = node.left
@@ -120,6 +119,7 @@ class IntervalSearchTree
       end
       node
     elsif node.right
+      p "hi"
       node.right.parent = node.parent
       if node.is_right
         node.parent.right = node.right
@@ -128,6 +128,7 @@ class IntervalSearchTree
       end
       node
     else
+      p node.parent.right
       if node.is_right
         node.parent.right = nil
       else
@@ -143,20 +144,28 @@ class IntervalSearchTree
     intersection = find_intersection(root, new_node)
     max = nil
     min = nil
+    i = 0
+    while intersection[1] && i < 50
+      i+=1
 
-    while intersection[1]
-      p intersection
+      # p intersection
       # cant use reference to node here because nodes mutate during deletion
       del_nodes << [intersection[0].s, intersection[0].e]
       max = intersection[0].e if max.nil? || intersection[0].e > max
       min = intersection[0].s if min.nil? || intersection[0].s < min
 
       # p del_nodes
+      p in_order_traversal(root)
+      p root.right.right.s if root.right.right
+      p intersection[0]
       remove(intersection[0])
+
       intersection = find_intersection(root, new_node)
 
+      p "hi - - -"
+
     end
-    p del_nodes
+    # p del_nodes
     [min, max]
   end
 
@@ -165,12 +174,35 @@ class IntervalSearchTree
     upper = [int_minmax[1], new_node.e].max
     lower = [int_minmax[0], new_node.s].min
 
-    p int_minmax
-    p [new_node.s, new_node.e]
-    merge_node = ISTNode.new(lower, upper)
-    insert(merge_node)
+    # p int_minmax
+    # p [new_node.s, new_node.e]
+    # merge_node = ISTNode.new(lower, upper)
+    # insert(merge_node)
 
   end
+
+  def delete_range(new_node)
+    # new node is the range thats being deleted
+    int_minmax = find_intersection_minmax(new_node)
+    merge_nodes = []
+    if int_minmax[0] >= new_node.s && int_minmax[1] <= new_node.s
+      # do nothing because only full ranges have been deleted
+      return
+    elsif new_node.s > int_minmax[0] && new_node.e > int_minmax[1]
+      # cuts off right side of one range and either
+      # deletes all the rest or does nothing else
+      merge_nodes << ISTNode.new(int_minmax[0], new_node.s)
+    elsif new_node.s > int_minmax[0] && new_node.e < int_minmax[1]
+      merge_nodes << ISTNode.new(int_minmax[0], new_node.s)
+      merge_nodes << ISTNode.new(new_node.e, int_minmax[1])
+    elsif new_node.s < int_minmax[0] && new_node.e < int_minmax[1]
+      merge_nodes << ISTNode.new(int_minmax[1], new_node.e)
+    end
+    # could have been more concise by reusing my intercept method and
+    # using a node object instead of the minmax array
+
+  end
+
 
 end
 
@@ -179,7 +211,7 @@ some_node = ISTNode.new(4,6)
 root = ISTNode.new(1,3)
 other_node = ISTNode.new(20,25)
 the_node = ISTNode.new(15,17)
-another_node = ISTNode.new(6,12)
+another_node = ISTNode.new(7,12)
 two_node = ISTNode.new(30,40)
 arr = [root,
 two_node,
@@ -205,8 +237,26 @@ end
 # a.remove(two_node)
 # p a.in_order_traversal
 # p a.in_order_traversal
-merging_node = ISTNode.new(16,22)
-a.merge(merging_node)
+# merging_node = ISTNode.new(15,25)
+# a.merge(merging_node)
+# p a.in_order_traversal
+# a.remove(another_node) ISTNode:0x007fa362817bf0
+# p a.in_order_traversal
+# p a.remove(another_node)
+# p a.in_order_traversal
+# p a.in_order_traversal
+stuff = ISTNode.new(11,45)
+# a.merge(stuff)\
+
+# a.find_intersection_minmax(stuff) use this  - - - -
+p a.in_order_traversal
+a.remove(two_node)
+p a.in_order_traversal
+a.remove(other_node)
+p a.in_order_traversal
+a.remove(the_node)
+p a.in_order_traversal
+a.remove(another_node)
 p a.in_order_traversal
 
 
