@@ -7,8 +7,6 @@ class ISTNode
     @largest = e
     @left = nil
     @right = nil
-
-    # @is_right = nil
     @parent = nil
   end
 
@@ -16,7 +14,6 @@ class ISTNode
     return nil if @parent.nil?
     return true if @s > @parent.s
     return false if @s <= @parent.s
-
   end
 
 end

@@ -1,15 +1,11 @@
 require_relative 'IntervalSearchTree'
-
 require 'csv'
-# require 'file'
-puts ARGV[0]
-# csv_path = File.join(File.dirname(__FILE__), 'inputfile.csv')
+
 csv_path = ARGV[0]
 
 file = File.read(csv_path)
 csv = CSV.parse(file)
 
-# txt_file = File.new("fsastuff.txt", "w")
 txt_file = File.new(ARGV[1], "w")
 
 tree = IntervalSearchTree.new
@@ -30,4 +26,3 @@ csv.each do |row|
   end
   txt_file.puts(tree.in_order_traversal.to_s)
 end
-# /Users/alexkite/Desktop/inputfile.csv

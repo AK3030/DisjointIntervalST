@@ -11,8 +11,12 @@ class IntervalSearchTree
     @root = insert_into_tree(@root, new_node)
   end
 
-  def insert_into_tree(curr_node, new_node)
+  # the interval search tree uses the start of the interval
+  # as a key to arrange the tree
 
+  def insert_into_tree(curr_node, new_node)
+    # each node tracks the largest end of an interval in
+    # its entire subtree
     if curr_node && (curr_node.largest < new_node.e)
       curr_node.largest = new_node.e
     end
@@ -22,10 +26,8 @@ class IntervalSearchTree
     new_node.parent = curr_node
 
     if new_node.s <= curr_node.s
-      # new_node.is_right = false
       curr_node.left = insert_into_tree(curr_node.left, new_node)
     elsif new_node.s > curr_node.s
-      # new_node.is_right = true
       curr_node.right = insert_into_tree(curr_node.right, new_node)
     end
 
@@ -33,6 +35,7 @@ class IntervalSearchTree
   end
 
   def in_order_traversal(tree_node = @root, arr = [])
+    return [] if @root == nil
 
     if tree_node.left
       in_order_traversal(tree_node.left, arr)
@@ -58,14 +61,10 @@ class IntervalSearchTree
 
   end
 
-
+# returns intersection types based on whether the new
+# range totally surrounds the node, is completely inside
+# or partially inside
   def intersects(curr_node, new_node)
-    # p curr_node.s
-    # p curr_node.e
-    # p curr_node.largest
-    #
-    # p new_node.s
-    # p new_node.e
     if (new_node.s <= curr_node.s) && (new_node.e >= curr_node.e)
       return :surrounds
     elsif (new_node.s >= curr_node.s) && (new_node.e <= curr_node.e)
@@ -79,37 +78,34 @@ class IntervalSearchTree
     end
   end
 
+
   def find_intersection(tree_node = @root, new_node)
-    # p tree_node.s
-    # p tree_node.e
-    # p tree_node.largest
-    # p " "
+
     if tree_node.nil?
       return [nil, false]
     elsif intersects(tree_node, new_node)
-
       return [tree_node, intersects(tree_node, new_node)]
     elsif tree_node.left.nil?
-
       find_intersection(tree_node.right, new_node)
     elsif tree_node.left.largest < new_node.s
-
+      # when searching the tree for intersections if the left substrees
+      # greatest right bound is less than the new ranges left bound
+      # there can not be any intersections to the left
       find_intersection(tree_node.right, new_node)
     else
-
       find_intersection(tree_node.left, new_node)
     end
   end
 
+# remove method should be cleaned up by using seperate methods
+# for different cases
   def remove(node)
-    # p node
+
     if node.left && node.right
       swap_node = minimum(node.right)
-      # swap_val = [swap_node.s, swap_node.e]
       remove(swap_node)
       node.s = swap_node.s
       node.e = swap_node.e
-
     elsif node.left
       if node.parent.nil?
         @root = node.left
@@ -125,13 +121,9 @@ class IntervalSearchTree
       end
     elsif node.right
       if node.parent.nil?
-
         @root = node.right
-
         @root.parent = nil
-
       else
-        # p in_order_traversal
         node.right.parent = node.parent
         if node.is_right
           node.parent.right = node.right
@@ -144,7 +136,6 @@ class IntervalSearchTree
       if node.parent.nil?
         @root = nil
       else
-        # p node.parent.right
         if node.is_right
           node.parent.right = nil
         else
@@ -164,23 +155,15 @@ class IntervalSearchTree
     i = 0
     while intersection[1] && i < 50
       i+=1
-
       # p intersection
       # cant use reference to node here because nodes mutate during deletion
       del_nodes << [intersection[0].s, intersection[0].e]
       max = intersection[0].e if max.nil? || intersection[0].e > max
       min = intersection[0].s if min.nil? || intersection[0].s < min
-
-      # p del_nodes
-      # p in_order_traversal(root)
-      # p root.right.right.s if root.right.right
-      # p intersection[0]
       remove(intersection[0])
 
       intersection = find_intersection(root, new_node)
-
     end
-    # p del_nodes
     [min, max]
   end
 
@@ -196,11 +179,8 @@ class IntervalSearchTree
     upper = [int_minmax[1], new_node.e].max
     lower = [int_minmax[0], new_node.s].min
 
-    # p int_minmax
-    # p [new_node.s, new_node.e]
     merge_node = ISTNode.new(lower, upper)
     insert(merge_node)
-
   end
 
   def delete_range(new_node)
