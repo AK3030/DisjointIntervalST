@@ -121,7 +121,11 @@ class IntervalSearchTree
       node
     elsif node.right
       node.right.parent = node.parent
-      node.parent.right = node.right
+      if node.is_right
+        node.parent.right = node.right
+      elsif !node.is_right
+        node.parent.left = node.right
+      end
       node
     else
       if node.is_right
@@ -161,7 +165,7 @@ class IntervalSearchTree
     upper = [int_minmax[1], new_node.e].max
     lower = [int_minmax[0], new_node.s].min
 
-    p int_max
+    p int_minmax
     p [new_node.s, new_node.e]
     merge_node = ISTNode.new(lower, upper)
     insert(merge_node)
@@ -192,15 +196,18 @@ end
 # p a.in_order_traversal
 
 # all = a.find_intersection_minmax(two_node)
-p a.find_intersection(two_node)
-p a.in_order_traversal
-p two_node.right
-p two_node.left
-p two_node.parent
-p two_node.parent.right
-a.remove(two_node)
-p a.in_order_traversal
+# p a.find_intersection(two_node)
 # p a.in_order_traversal
+# p two_node.right
+# p two_node.left
+# p two_node.parent
+# p two_node.parent.right
+# a.remove(two_node)
+# p a.in_order_traversal
+# p a.in_order_traversal
+merging_node = ISTNode.new(16,22)
+a.merge(merging_node)
+p a.in_order_traversal
 
 
 # p a.intersects(two_node, other_node)
